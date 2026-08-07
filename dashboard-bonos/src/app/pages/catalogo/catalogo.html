@@ -1,0 +1,23 @@
+<div class="min-h-screen bg-[#0f172a] p-6 text-slate-200">
+  <div class="max-w-5xl mx-auto">
+
+    <h1 class="text-3xl font-extrabold text-cyan-400 mb-1">Tus Dashboards</h1>
+    <p class="text-slate-400 text-sm mb-8">Elige un dashboard para ver el detalle</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <a
+        *ngFor="let d of dashboards"
+        [routerLink]="['/dashboard', d.clave]"
+        class="bg-slate-800/60 hover:bg-slate-800 rounded-3xl border border-slate-700 shadow-xl p-6 flex flex-col gap-3 transition-colors">
+        <span class="text-3xl">{{ emoji(d.icono) }}</span>
+        <h2 class="text-lg font-bold text-slate-100">{{ d.nombre }}</h2>
+        <p class="text-sm text-slate-400">{{ d.descripcion }}</p>
+      </a>
+    </div>
+
+    <p *ngIf="!dashboards.length" class="text-slate-400 text-sm mt-4">
+      No tienes dashboards asignados todavía.
+    </p>
+
+  </div>
+</div>

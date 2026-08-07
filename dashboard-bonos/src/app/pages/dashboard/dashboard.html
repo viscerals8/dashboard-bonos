@@ -1,0 +1,128 @@
+<div class="min-h-screen bg-[#0f172a] p-6 text-slate-200">
+
+  <div class="max-w-6xl mx-auto bg-slate-800/60 rounded-3xl border border-slate-700 shadow-xl">
+
+    <!-- HEADER -->
+    <div class="p-6 flex flex-col md:flex-row justify-between gap-6 items-center border-b border-slate-700">
+
+      <div>
+        <h2 class="text-3xl font-extrabold text-cyan-400">
+          Top 10: Ranking de Bonos
+        </h2>
+        <p class="text-slate-400 text-sm">
+          Analítica de desempeño por trabajadores
+        </p>
+      </div>
+
+      <!-- FILTROS -->
+      <div class="flex gap-2 flex-wrap">
+
+        <select
+          [(ngModel)]="zonaSeleccionada"
+          (change)="aplicarFiltro()"
+          class="bg-slate-900 px-4 py-2 rounded-xl text-sm border border-slate-700">
+          <option *ngFor="let z of zonas" [value]="z">{{ z }}</option>
+        </select>
+
+        <select
+          [(ngModel)]="anioSeleccionado"
+          (change)="aplicarFiltro()"
+          class="bg-slate-900 px-4 py-2 rounded-xl text-sm border border-slate-700">
+          <option [value]="0">Todos los Años</option>
+          <option *ngFor="let a of anios" [value]="a">{{ a }}</option>
+        </select>
+
+        <select
+          [(ngModel)]="mesSeleccionado"
+          (change)="aplicarFiltro()"
+          class="bg-slate-900 px-4 py-2 rounded-xl text-sm border border-slate-700">
+          <option [value]="0">Todos los Meses</option>
+          <option *ngFor="let m of meses" [value]="m">{{ m }}</option>
+        </select>
+
+        <select
+          [(ngModel)]="semestreSeleccionado"
+          (change)="aplicarFiltro()"
+          class="bg-slate-900 px-4 py-2 rounded-xl text-sm border border-slate-700">
+          <option [value]="0">Todos los Semestres</option>
+          <option *ngFor="let s of semestres" [value]="s">{{ s }}</option>
+        </select>
+
+      </div>
+
+      <!-- BOTONES -->
+      <div class="flex gap-2">
+
+        <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
+          <button
+            (click)="view = 'donut'"
+            [class.bg-blue-600]="view === 'donut'"
+            class="px-5 py-2 rounded-lg text-sm">
+            🍩 Resumen
+          </button>
+          <button
+            (click)="view = 'bar'"
+            [class.bg-blue-600]="view === 'bar'"
+            class="px-5 py-2 rounded-lg text-sm">
+            📊 Detalle
+          </button>
+        </div>
+
+        <button
+          (click)="exportarExcel()"
+          class="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-xl text-sm">
+          ⬇ Exportar
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="p-6">
+
+      <!-- DONUT + PIE -->
+      <div *ngIf="view === 'donut'" class="grid grid-cols-1 xl:grid-cols-2 gap-10">
+
+        <apx-chart
+          [series]="donutSeries"
+          [chart]="donutChart"
+          [labels]="donutLabels"
+          [plotOptions]="plotOptions"
+          [legend]="legend"
+          [theme]="theme">
+        </apx-chart>
+
+        <apx-chart
+          [series]="donutSeries"
+          [chart]="pieChart"
+          [labels]="donutLabels"
+          [legend]="legend"
+          [theme]="theme">
+        </apx-chart>
+
+      </div>
+
+      <!-- BARRAS -->
+      <div *ngIf="view === 'bar'">
+
+        <button
+          (click)="volverDonut()"
+          class="text-blue-400 text-sm mb-4">
+          ⬅ Volver
+        </button>
+
+        <apx-chart
+          [series]="barSeries"
+          [chart]="barChart"
+          [xaxis]="barXAxis"
+          [plotOptions]="plotOptions"
+          [theme]="theme"
+          [dataLabels]="dataLabels">
+        </apx-chart>
+
+      </div>
+
+    </div>
+  </div>
+</div>

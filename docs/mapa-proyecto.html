@@ -1,0 +1,333 @@
+<title>Sistema de Bonos — Mapa del Proyecto</title>
+<style>
+  :root{
+    --bg:#f7f9fc; --surface:#ffffff; --surface-2:#eef2f8; --border:#dde3ec;
+    --text:#16213a; --text-dim:#5b6b85; --accent:#0891b2; --accent-soft:#e0f6fa;
+    --angular:#c3103a; --fastapi:#00786f; --sql:#3d5ac9; --warn:#b45309; --warn-soft:#fef3e0;
+    --code-bg:#0f172a; --code-text:#cbd5e1; --code-border:#1e293b;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b1220; --surface:#111a2c; --surface-2:#0e1626; --border:#22314a;
+      --text:#e2e8f0; --text-dim:#94a3b8; --accent:#22d3ee; --accent-soft:#0d2b33;
+      --angular:#ff5c7a; --fastapi:#2dd4bf; --sql:#8ea2ff; --warn:#fbbf24; --warn-soft:#3a2a0d;
+      --code-bg:#060b15; --code-text:#d6e2f0; --code-border:#1c2a40;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0b1220; --surface:#111a2c; --surface-2:#0e1626; --border:#22314a;
+    --text:#e2e8f0; --text-dim:#94a3b8; --accent:#22d3ee; --accent-soft:#0d2b33;
+    --angular:#ff5c7a; --fastapi:#2dd4bf; --sql:#8ea2ff; --warn:#fbbf24; --warn-soft:#3a2a0d;
+    --code-bg:#060b15; --code-text:#d6e2f0; --code-border:#1c2a40;
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f9fc; --surface:#ffffff; --surface-2:#eef2f8; --border:#dde3ec;
+    --text:#16213a; --text-dim:#5b6b85; --accent:#0891b2; --accent-soft:#e0f6fa;
+    --angular:#c3103a; --fastapi:#00786f; --sql:#3d5ac9; --warn:#b45309; --warn-soft:#fef3e0;
+    --code-bg:#0f172a; --code-text:#cbd5e1; --code-border:#1e293b;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family: ui-sans-serif, "Segoe UI", "Work Sans", "Helvetica Neue", Arial, sans-serif;
+    line-height:1.55;
+  }
+  .mono{ font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", "SFMono-Regular", Consolas, monospace; }
+
+  .wrap{ max-width: 920px; margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+
+  header.hero{
+    display:flex; flex-direction:column; gap:.9rem; margin-bottom: 2.75rem;
+    border-bottom: 1px solid var(--border); padding-bottom: 2rem;
+  }
+  .eyebrow{
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", monospace;
+    font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--accent);
+  }
+  h1{ font-size: clamp(1.7rem, 3.2vw, 2.4rem); margin:0; text-wrap:balance; font-weight:700; }
+  .sub{ color:var(--text-dim); font-size:1rem; max-width:65ch; }
+  .chips{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.4rem; }
+  .chip{
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", monospace;
+    font-size:.75rem; padding:.3rem .65rem; border-radius: 5px;
+    border:1px solid var(--border); color:var(--text-dim); background:var(--surface-2);
+  }
+
+  section{ margin-bottom: 3rem; }
+  h2{
+    font-size:1.05rem; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--text-dim); font-weight:600; margin:0 0 1.1rem;
+    display:flex; align-items:center; gap:.6rem;
+  }
+  h2::before{ content:""; width:18px; height:2px; background:var(--accent); display:inline-block; }
+  h3{ font-size:1rem; margin: 1.4rem 0 .6rem; color:var(--text); }
+
+  p{ margin:.5rem 0 1rem; }
+  ul{ padding-left:1.2rem; margin:.4rem 0 1rem; }
+  li{ margin:.3rem 0; }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:1.4rem 1.5rem;
+  }
+
+  .diagram-card{ background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.2rem; overflow-x:auto; }
+  .diagram-card pre.mermaid{ margin:0; display:flex; justify-content:center; }
+
+  .tree-box{
+    background:var(--code-bg); color:var(--code-text); border:1px solid var(--code-border);
+    border-radius:10px; padding:1.1rem 1.3rem; overflow-x:auto; font-size:.83rem;
+  }
+  .tree-box pre{ margin:0; white-space:pre; }
+  .flag{ color:var(--warn); }
+  .comment{ color: #64748b; }
+
+  table{ width:100%; border-collapse:collapse; font-size:.9rem; }
+  th, td{ text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--border); vertical-align:top; }
+  th{ color:var(--text-dim); font-weight:600; font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; }
+  td code, td .mono{ font-size:.82rem; }
+  .table-wrap{ overflow-x:auto; }
+
+  .pill{
+    display:inline-block; font-size:.72rem; font-family: ui-monospace, "Cascadia Code", monospace;
+    padding:.15rem .5rem; border-radius:99px; font-weight:600;
+  }
+  .pill-angular{ background: color-mix(in srgb, var(--angular) 16%, transparent); color:var(--angular); }
+  .pill-fastapi{ background: color-mix(in srgb, var(--fastapi) 16%, transparent); color:var(--fastapi); }
+  .pill-sql{ background: color-mix(in srgb, var(--sql) 16%, transparent); color:var(--sql); }
+
+  .issues{ display:flex; flex-direction:column; gap:.75rem; }
+  .issue{
+    border:1px solid var(--border); border-left:3px solid var(--warn);
+    background:var(--warn-soft); border-radius:0 8px 8px 0; padding:.85rem 1.1rem;
+  }
+  .issue .head{ font-weight:600; font-size:.92rem; margin-bottom:.2rem; }
+  .issue .body{ color:var(--text-dim); font-size:.87rem; }
+  .issue code{ font-size:.82rem; }
+
+  code{
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", monospace;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:4px;
+    padding:.05rem .35rem; font-size:.85rem;
+  }
+
+  .recs{ counter-reset: rec; list-style:none; padding:0; display:flex; flex-direction:column; gap:.6rem; }
+  .recs li{ counter-increment: rec; position:relative; padding-left:2.1rem; margin:0; }
+  .recs li::before{
+    content: counter(rec); position:absolute; left:0; top:.05rem;
+    font-family: ui-monospace, monospace; font-size:.75rem; font-weight:700;
+    width:1.5rem; height:1.5rem; border-radius:6px; background:var(--accent-soft); color:var(--accent);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  footer{ color:var(--text-dim); font-size:.8rem; border-top:1px solid var(--border); padding-top:1.2rem; }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Mapa de arquitectura &amp; base de datos</span>
+    <h1>Sistema de Bonos — dashboard-bonos</h1>
+    <p class="sub">Aplicación de analítica de bonos por trabajador/zona/empresa. Stack: Angular 20 (standalone) + TailwindCSS en el frontend, FastAPI + SQLAlchemy en el backend, sobre SQL Server.</p>
+    <div class="chips">
+      <span class="chip">Angular 20</span>
+      <span class="chip">TailwindCSS</span>
+      <span class="chip">ng-apexcharts</span>
+      <span class="chip">FastAPI</span>
+      <span class="chip">SQLAlchemy (raw SQL)</span>
+      <span class="chip">SQL Server · pyodbc</span>
+    </div>
+  </header>
+
+  <section>
+    <h2>Resumen</h2>
+    <div class="card">
+      <ul>
+        <li>Es una app de <strong>un solo caso de uso</strong>: un ranking "Top 10 de bonos por trabajador", con filtros por zona/año/mes/semestre y export a Excel.</li>
+        <li>El backend expone <strong>un solo endpoint de datos</strong> (<code>/dashboard/bonos-top</code>) que corre una consulta SQL compleja (CTE + <code>ROW_NUMBER()</code>) directamente contra SQL Server — no hay ORM con modelos, ni capa de schemas.</li>
+        <li>El frontend recibe el dataset completo y hace <strong>todo el filtrado/agrupado en el navegador</strong> (no hay paginación ni filtros server-side).</li>
+        <li>Hay una carpeta raíz (<code>src/app</code> y <code>package.json</code> en <code>dashboard/</code>) que parece un <strong>scaffold Angular abandonado</strong>, separado del proyecto real <code>dashboard-bonos/</code>. Ver observaciones.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Arquitectura general</h2>
+    <div class="diagram-card">
+<pre class="mermaid">
+flowchart LR
+    subgraph FE["dashboard-bonos — Angular 20 (:4200)"]
+      A["Dashboard component<br/>pages/dashboard"]
+      S["DashboardService<br/>HttpClient"]
+      A --> S
+    end
+
+    subgraph BE["dashboard-backend — FastAPI (:8000)"]
+      M["main.py<br/>CORS + router"]
+      R["dashboard.py<br/>APIRouter /dashboard"]
+      D["database.py<br/>SQLAlchemy engine"]
+      M --> R --> D
+    end
+
+    subgraph DB["SQL Server — 192.168.100.4"]
+      SB[("Sistema_Bonos")]
+    end
+
+    S -- "GET /dashboard/bonos-top" --> M
+    D -- "pyodbc / mssql+pyodbc" --> SB
+</pre>
+    </div>
+    <p style="margin-top:.9rem; color:var(--text-dim); font-size:.88rem;">Sin capa de autenticación, sin gateway ni proxy: el navegador llama directo a <code class="mono">http://127.0.0.1:8000</code> y CORS está restringido a <code class="mono">http://localhost:4200</code>.</p>
+  </section>
+
+  <section>
+    <h2>Estructura de carpetas</h2>
+
+    <h3><span class="pill pill-fastapi">backend</span> dashboard-backend/</h3>
+    <div class="tree-box mono">
+<pre>dashboard-backend/
+├── app/
+│   ├── __init__.py        <span class="comment">vacío</span>
+│   ├── main.py             <span class="comment"># FastAPI() + CORS + include_router</span>
+│   ├── database.py         <span class="comment"># engine SQLAlchemy (mssql+pyodbc)</span>
+│   └── dashboard.py        <span class="comment"># APIRouter: /dashboard/test, /dashboard/bonos-top</span>
+└── venv/                   <span class="flag">↳ entorno virtual versionado junto al código</span>
+
+<span class="flag">⚠ no existe requirements.txt / pyproject.toml</span>
+<span class="flag">⚠ no hay models.py ni schemas.py (Pydantic) — todo vive en dashboard.py como SQL crudo</span></pre>
+    </div>
+
+    <h3><span class="pill pill-angular">frontend</span> dashboard-bonos/</h3>
+    <div class="tree-box mono">
+<pre>dashboard-bonos/
+├── src/
+│   ├── app/
+│   │   ├── app.ts / app.html / app.scss     <span class="comment"># root standalone component</span>
+│   │   ├── app.routes.ts                     <span class="comment"># '' → Dashboard</span>
+│   │   ├── app.config.ts
+│   │   ├── root.component.ts
+│   │   ├── pages/
+│   │   │   └── dashboard/
+│   │   │       ├── dashboard.ts               <span class="comment"># lógica: filtros, agregación, charts, export</span>
+│   │   │       ├── dashboard.html              <span class="comment"># Tailwind + apx-chart (donut/pie/bar)</span>
+│   │   │       └── dashboard.scss
+│   │   └── services/
+│   │       └── dashboard.service.ts            <span class="comment"># HttpClient → GET /dashboard/bonos-top</span>
+│   ├── index.html / main.ts / styles.scss
+├── tailwind.config.js / postcss.config.js
+└── angular.json</pre>
+    </div>
+
+    <h3>Raíz del repo (<span class="flag">posible residuo</span>)</h3>
+    <div class="tree-box mono">
+<pre>dashboard/                          <span class="comment"># carpeta contenedora</span>
+├── src/app/services/dashboard.service.ts   <span class="flag">↳ archivo vacío, sin componentes alrededor</span>
+├── package.json                             <span class="flag">↳ solo tailwind/postcss, sin Angular ni deps reales</span>
+├── consultas/dashboard.txt                  <span class="comment"># borrador anterior de la query bonos-top</span>
+├── dashboard-backend/
+└── dashboard-bonos/                          <span class="comment"># ← el proyecto Angular real</span></pre>
+    </div>
+  </section>
+
+  <section>
+    <h2>Backend — endpoints</h2>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Método</th><th>Ruta</th><th>Archivo</th><th>Qué hace</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET</code></td><td><code>/</code></td><td class="mono">main.py</td><td>Healthcheck, retorna <code>{"status":"ok"}</code></td></tr>
+          <tr><td><code>GET</code></td><td><code>/dashboard/test</code></td><td class="mono">dashboard.py</td><td>Prueba de conexión, <code>SELECT 1 AS ok</code></td></tr>
+          <tr><td><code>GET</code></td><td><code>/dashboard/bonos-top</code></td><td class="mono">dashboard.py</td><td>CTE que arma ranking de bonos pagados (<code>ESTADO=3</code>) por trabajador dentro de cada zona/empresa/año/mes, vía <code>ROW_NUMBER()</code>. Devuelve el dataset completo (sin filtros ni paginación); el filtrado top-10 lo hace el frontend.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Mapa de la base de datos</h2>
+    <p style="color:var(--text-dim); font-size:.88rem;">SQL Server, base <code>Sistema_Bonos</code> (host <code class="mono">192.168.100.4</code>). Este mapa refleja únicamente las tablas/columnas visibles en la consulta <code>bonos-top</code> — es el único SQL presente en el repo, así que probablemente existan más tablas en la base real que no se ven desde aquí.</p>
+    <div class="diagram-card">
+<pre class="mermaid">
+erDiagram
+    USUARIOS ||--o{ INGRESO_BONO : "rut = SOLICITANTE"
+    ZONAS ||--o{ INGRESO_BONO : "ID_ZONA = id_zona"
+    EMPRESAS ||--o{ INGRESO_BONO : "ID_EMPRESA = ID_EMPRESA"
+
+    USUARIOS {
+        varchar rut PK
+        varchar nombre_completo
+    }
+    ZONAS {
+        int ID_ZONA PK
+        varchar NOMBRE_ZONA
+    }
+    EMPRESAS {
+        int ID_EMPRESA PK
+        varchar NOMBRE_EMPRESA
+    }
+    INGRESO_BONO {
+        varchar SOLICITANTE FK
+        int id_zona FK
+        int ID_EMPRESA FK
+        int ESTADO "3 = cerrado/pagado, catálogo no visible"
+        date FECHA_CIERRE
+        decimal MONTO
+    }
+</pre>
+    </div>
+
+    <div class="table-wrap" style="margin-top:1.2rem;">
+      <table>
+        <thead><tr><th>Tabla</th><th>Columnas usadas</th><th>Rol</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">INGRESO_BONO</td><td class="mono">SOLICITANTE, id_zona, ID_EMPRESA, ESTADO, FECHA_CIERRE, MONTO</td><td>Tabla de hechos: cada fila es un bono solicitado/pagado.</td></tr>
+          <tr><td class="mono">USUARIOS</td><td class="mono">rut (PK), nombre_completo</td><td>Catálogo de trabajadores; se une por RUT.</td></tr>
+          <tr><td class="mono">ZONAS</td><td class="mono">ID_ZONA (PK), NOMBRE_ZONA</td><td>Catálogo de zonas geográficas/operativas.</td></tr>
+          <tr><td class="mono">EMPRESAS</td><td class="mono">ID_EMPRESA (PK), NOMBRE_EMPRESA</td><td>Catálogo de empresas/mandantes.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--text-dim); font-size:.85rem; margin-top:.8rem;"><code>consultas/dashboard.txt</code> es una versión previa de la misma query (sin <code>MONTO</code> ni semestre) — confirma que <code>ESTADO</code> es un código entero sin tabla catálogo unida en ninguna versión.</p>
+  </section>
+
+  <section>
+    <h2>Observaciones</h2>
+    <div class="issues">
+      <div class="issue">
+        <div class="head">Credenciales de base de datos hardcodeadas</div>
+        <div class="body"><code class="mono">database.py</code> tiene usuario/contraseña (<code>sa</code>/<code>afm</code>) y la IP del servidor escritos directo en el código, versionados en el repo. Deberían moverse a variables de entorno / <code>.env</code>.</div>
+      </div>
+      <div class="issue">
+        <div class="head">Endpoints sin autenticación</div>
+        <div class="body">Cualquiera con acceso a la red puede pegarle a <code>/dashboard/bonos-top</code> y ver montos y nombres de trabajadores.</div>
+      </div>
+      <div class="issue">
+        <div class="head">Carpeta raíz duplicada / residual</div>
+        <div class="body"><code class="mono">dashboard/src/app/services/dashboard.service.ts</code> está vacío y el <code class="mono">package.json</code> de la raíz solo trae Tailwind — parece un <code>ng new</code> inicial que quedó abandonado cuando se creó <code class="mono">dashboard-bonos/</code>. Si no se usa, vale la pena borrarlo para no confundir a quien retome el proyecto.</div>
+      </div>
+      <div class="issue">
+        <div class="head">Sin gestión de dependencias del backend</div>
+        <div class="body">No hay <code class="mono">requirements.txt</code> ni <code class="mono">pyproject.toml</code> — solo la <code class="mono">venv/</code> versionada. Difícil de reproducir el entorno en otra máquina.</div>
+      </div>
+      <div class="issue">
+        <div class="head">Filtrado en el cliente, no en el servidor</div>
+        <div class="body">El endpoint trae todo el histórico de bonos pagados y el componente Angular agrupa/filtra/top-10 en el navegador. Funciona con el volumen actual, pero no escala si la tabla <code class="mono">INGRESO_BONO</code> crece mucho.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Si sigues avanzando el proyecto</h2>
+    <ol class="recs">
+      <li>Mover credenciales de <code class="mono">database.py</code> a variables de entorno y sacar la <code class="mono">venv/</code> del control de versiones (<code class="mono">.gitignore</code>).</li>
+      <li>Decidir si la carpeta raíz (<code class="mono">dashboard/src</code>, <code class="mono">package.json</code>) se mantiene o se elimina — hoy convive con <code class="mono">dashboard-bonos/</code> sin motivo claro.</li>
+      <li>Congelar dependencias del backend con <code class="mono">pip freeze &gt; requirements.txt</code>.</li>
+      <li>Si el dataset crece, mover el filtrado (zona/año/mes/semestre) a parámetros de query en el endpoint en vez de traer todo al navegador.</li>
+    </ol>
+  </section>
+
+  <footer>Generado a partir del código fuente en <code class="mono">dashboard-backend/</code> y <code class="mono">dashboard-bonos/</code>. El mapa de base de datos se infiere solo de la query <code class="mono">bonos-top</code>; puede haber más tablas en <code class="mono">Sistema_Bonos</code> no representadas aquí.</footer>
+
+</div>

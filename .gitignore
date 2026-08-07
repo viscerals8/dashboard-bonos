@@ -1,0 +1,39 @@
+# --- Secrets / entornos ---
+.env
+.env.*
+!.env.example
+
+# --- Python (dashboard-backend) ---
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+*.log
+
+# --- Node / Angular (dashboard-bonos) ---
+node_modules/
+dist/
+.angular/cache/
+npm-debug.log*
+
+# --- Dumps de base de datos / datos reales (nunca al repo) ---
+dashboard-backend/migrations/export_chunks/
+dashboard-backend/migrations/Sistema_Bonos_export.sql
+
+# --- Documentos internos con datos sensibles/PII, no publicar ---
+USUARIOS_PRUEBA.md
+docs/USUARIOS_PRUEBA.md
+docs/PROMPT_REPLICACION.md
+
+# --- Notas de trabajo / scratch, no aportan al repo publicado ---
+consultas/
+
+# --- Sistema operativo / editores ---
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/

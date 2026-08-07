@@ -1,0 +1,280 @@
+<div class="min-h-screen bg-[#0f172a] p-6 text-slate-200">
+  <div class="max-w-7xl mx-auto">
+
+    <div class="mb-6">
+      <h1 class="text-3xl font-extrabold text-cyan-400">Panel General</h1>
+      <p class="text-slate-400 text-sm">Indicadores del sistema de bonos — usa las pestañas para navegar</p>
+    </div>
+
+    <!-- GRUPOS -->
+    <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700 mb-4 w-fit">
+      <button
+        *ngFor="let g of grupos"
+        (click)="seleccionarGrupo(g.id)"
+        [class.bg-cyan-600]="grupoActivo === g.id"
+        [class.text-white]="grupoActivo === g.id"
+        class="px-4 py-2 rounded-lg text-sm text-slate-300 transition-colors">
+        {{ g.nombre }}
+      </button>
+    </div>
+
+    <!-- VENTANAS / TABS -->
+    <div class="flex gap-2 overflow-x-auto pb-3 mb-6 border-b border-slate-700">
+      <button
+        *ngFor="let v of ventanas"
+        (click)="seleccionar(v.id)"
+        [class.bg-blue-600]="activa === v.id"
+        [class.text-white]="activa === v.id"
+        class="shrink-0 px-4 py-2 rounded-xl text-sm bg-slate-800/60 border border-slate-700 text-slate-300 hover:bg-slate-800 transition-colors">
+        <span class="mr-1">{{ v.icono }}</span>{{ v.nombre }}
+      </button>
+    </div>
+
+    <!-- CONTENIDO -->
+    <div>
+
+      <div *ngIf="activa === 'top-bonos'" class="-m-6">
+        <app-dashboard></app-dashboard>
+      </div>
+
+      <div *ngIf="activa === 'embudo'" class="-m-6">
+        <app-embudo-aprobacion></app-embudo-aprobacion>
+      </div>
+
+      <div *ngIf="activa === 'evolucion'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Evolución Mensual"
+          subtitle="Monto pagado y cantidad de bonos cerrados por mes"
+          [categories]="evoCategorias"
+          [series]="evoMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [secondarySeries]="evoCantidad"
+          secondarySeriesName="Cantidad"
+          secondaryValueFormat="number"
+          [types]="categoricalTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'zona'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Bonos por Zona"
+          subtitle="Distribución geográfica de bonos pagados"
+          [categories]="zonaCategorias"
+          [series]="zonaMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [secondarySeries]="zonaCantidad"
+          secondarySeriesName="Cantidad"
+          secondaryValueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'empresa'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Bonos por Empresa"
+          subtitle="Distribución de bonos pagados por empresa"
+          [categories]="empresaCategorias"
+          [series]="empresaMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [secondarySeries]="empresaCantidad"
+          secondarySeriesName="Cantidad"
+          secondaryValueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'concepto'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Bonos por Concepto"
+          subtitle="Tipos de bono más frecuentes (top 7 + Otros)"
+          [categories]="conceptoCategorias"
+          [series]="conceptoMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [secondarySeries]="conceptoCantidad"
+          secondarySeriesName="Cantidad"
+          secondaryValueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'superbono'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Superbono vs Normal"
+          subtitle="Proporción de bonos marcados como superbono"
+          [categories]="superbonoCategorias"
+          [series]="superbonoMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [secondarySeries]="superbonoCantidad"
+          secondarySeriesName="Cantidad"
+          secondaryValueFormat="number"
+          [types]="proportionTypes"
+          defaultType="donut">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'tiempo'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Tiempo de Aprobación"
+          subtitle="Promedio de días entre creación y cierre del bono"
+          [categories]="tiempoCategorias"
+          [series]="tiempoPromedio"
+          seriesName="Promedio de días"
+          valueFormat="days"
+          [types]="categoricalTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'rechazo'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Motivos de Rechazo"
+          subtitle="Motivos más frecuentes de rechazo (top 7 + Otros)"
+          [categories]="rechazoCategorias"
+          [series]="rechazoTotales"
+          seriesName="Bonos rechazados"
+          valueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'talana'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Firma Talana"
+          subtitle="Estado de firma para bonos que entraron al proceso Talana"
+          [categories]="talanaCategorias"
+          [series]="talanaTotales"
+          seriesName="Bonos"
+          valueFormat="number"
+          [types]="proportionTypes"
+          defaultType="donut">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'validadores'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Ranking de Validadores"
+          subtitle="Quién valida más solicitudes (top 8 + Otros)"
+          [categories]="validadoresCategorias"
+          [series]="validadoresTotales"
+          seriesName="Validaciones"
+          valueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <!-- MI INFO -->
+
+      <div *ngIf="activa === 'mi-perfil'" class="grid grid-cols-1">
+        <div class="bg-slate-800/60 rounded-3xl border border-slate-700 shadow-xl p-8" *ngIf="miPerfil">
+          <h3 class="text-lg font-bold text-slate-100 mb-6">🪪 Mi Perfil</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+              <p class="text-slate-400 text-xs">Nombre</p>
+              <p class="text-slate-100 text-lg">{{ miPerfil.nombre_completo }}</p>
+            </div>
+            <div>
+              <p class="text-slate-400 text-xs">RUT</p>
+              <p class="text-slate-100 text-lg">{{ miPerfil.rut }}</p>
+            </div>
+            <div>
+              <p class="text-slate-400 text-xs">Perfil</p>
+              <p class="text-slate-100 text-lg">{{ miPerfil.perfil }}</p>
+            </div>
+            <div>
+              <p class="text-slate-400 text-xs">Empresas asignadas</p>
+              <p class="text-slate-100 text-lg">{{ miPerfil.nombres_empresas || 'Todas (sin restricción)' }}</p>
+            </div>
+            <div>
+              <p class="text-slate-400 text-xs">Zonas asignadas</p>
+              <p class="text-slate-100 text-lg">{{ miPerfil.nombres_zonas || 'Todas (sin restricción)' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="activa === 'mis-solicitados'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Mis Bonos Solicitados"
+          subtitle="Estado de los bonos que tú solicitaste"
+          [categories]="misSolicitadosCategorias"
+          [series]="misSolicitadosMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [secondarySeries]="misSolicitadosCantidad"
+          secondarySeriesName="Cantidad"
+          secondaryValueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'mis-validaciones'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Mis Validaciones"
+          subtitle="Bonos donde tú apareces como validador — incluye lo pendiente y lo ya resuelto"
+          [categories]="misValidacionesCategorias"
+          [series]="misValidacionesTotales"
+          seriesName="Bonos"
+          valueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'mi-ranking'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Mi Ranking"
+          subtitle="Top 15 por monto pagado — tu barra destacada en celeste"
+          [categories]="miRankingCategorias"
+          [series]="miRankingMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [types]="['bar']"
+          [highlightIndex]="miRankingHighlight">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'mi-evolucion'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Mi Evolución Mensual"
+          subtitle="Monto y cantidad de tus bonos cerrados, mes a mes"
+          [categories]="miEvolucionCategorias"
+          [series]="miEvolucionMonto"
+          seriesName="Monto"
+          valueFormat="money"
+          [secondarySeries]="miEvolucionCantidad"
+          secondarySeriesName="Cantidad"
+          secondaryValueFormat="number"
+          [types]="categoricalTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'mis-rechazos'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Mis Motivos de Rechazo"
+          subtitle="Por qué te han rechazado bonos (top 7 + Otros)"
+          [categories]="misRechazosCategorias"
+          [series]="misRechazosTotales"
+          seriesName="Bonos rechazados"
+          valueFormat="number"
+          [types]="proportionTypes">
+        </app-kpi-card>
+      </div>
+
+      <div *ngIf="activa === 'mi-tiempo'" class="grid grid-cols-1">
+        <app-kpi-card
+          title="Mi Tiempo de Aprobación"
+          subtitle="Cuánto te demoras tú en cerrar los bonos que validas"
+          [categories]="miTiempoCategorias"
+          [series]="miTiempoPromedio"
+          seriesName="Promedio de días"
+          valueFormat="days"
+          [types]="categoricalTypes">
+        </app-kpi-card>
+      </div>
+
+    </div>
+  </div>
+</div>

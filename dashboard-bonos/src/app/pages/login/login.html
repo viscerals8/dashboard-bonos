@@ -1,0 +1,43 @@
+<div class="min-h-screen bg-[#0f172a] flex items-center justify-center p-6 text-slate-200">
+  <form
+    (ngSubmit)="onSubmit()"
+    class="w-full max-w-sm bg-slate-800/60 rounded-3xl border border-slate-700 shadow-xl p-8 flex flex-col gap-5">
+
+    <div>
+      <h1 class="text-2xl font-extrabold text-cyan-400">Sistema de Bonos</h1>
+      <p class="text-slate-400 text-sm">Ingresa con tu cuenta</p>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-xs text-slate-400" for="username">Usuario</label>
+      <input
+        id="username"
+        name="username"
+        [(ngModel)]="username"
+        required
+        autocomplete="username"
+        class="bg-slate-900 px-4 py-2 rounded-xl text-sm border border-slate-700 focus:outline-none focus:border-cyan-400" />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-xs text-slate-400" for="password">Contraseña</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        [(ngModel)]="password"
+        required
+        autocomplete="current-password"
+        class="bg-slate-900 px-4 py-2 rounded-xl text-sm border border-slate-700 focus:outline-none focus:border-cyan-400" />
+    </div>
+
+    <p *ngIf="error" class="text-sm text-rose-400">{{ error }}</p>
+
+    <button
+      type="submit"
+      [disabled]="loading"
+      class="bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 px-4 py-2 rounded-xl text-sm font-semibold">
+      {{ loading ? 'Ingresando...' : 'Ingresar' }}
+    </button>
+  </form>
+</div>

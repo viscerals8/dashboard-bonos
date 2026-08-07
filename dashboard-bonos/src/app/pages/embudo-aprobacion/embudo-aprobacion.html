@@ -1,0 +1,22 @@
+<div class="min-h-screen bg-[#0f172a] p-6 text-slate-200">
+  <div class="max-w-4xl mx-auto bg-slate-800/60 rounded-3xl border border-slate-700 shadow-xl p-6">
+
+    <div class="mb-6">
+      <h2 class="text-3xl font-extrabold text-cyan-400">Embudo de Aprobación</h2>
+      <p class="text-slate-400 text-sm">
+        {{ totalBonos }} solicitudes de bono por estado
+      </p>
+    </div>
+
+    <apx-chart
+      [series]="barSeries"
+      [chart]="barChart"
+      [xaxis]="barXAxis"
+      [plotOptions]="plotOptions"
+      [legend]="legend"
+      [theme]="theme"
+      [dataLabels]="dataLabels">
+    </apx-chart>
+
+  </div>
+</div>

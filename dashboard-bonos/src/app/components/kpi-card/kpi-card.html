@@ -1,0 +1,67 @@
+<div class="bg-slate-800/60 rounded-3xl border border-slate-700 shadow-xl p-6 h-full flex flex-col">
+
+  <div class="flex flex-wrap justify-between items-start gap-3 mb-4">
+    <div>
+      <h3 class="text-lg font-bold text-slate-100">{{ title }}</h3>
+      <p *ngIf="subtitle" class="text-slate-400 text-xs">{{ subtitle }}</p>
+    </div>
+
+    <div class="flex gap-2 flex-wrap justify-end">
+
+      <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700" *ngIf="secondarySeries">
+        <button
+          (click)="setMetric('primary')"
+          [class.bg-emerald-600]="activeMetric === 'primary'"
+          class="px-3 py-1.5 rounded-lg text-xs text-slate-200">
+          {{ seriesName }}
+        </button>
+        <button
+          (click)="setMetric('secondary')"
+          [class.bg-emerald-600]="activeMetric === 'secondary'"
+          class="px-3 py-1.5 rounded-lg text-xs text-slate-200">
+          {{ secondarySeriesName }}
+        </button>
+      </div>
+
+      <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700" *ngIf="types.length > 1">
+        <button
+          *ngFor="let t of types"
+          (click)="setType(t)"
+          [class.bg-blue-600]="currentType === t"
+          class="px-3 py-1.5 rounded-lg text-xs text-slate-200"
+          [attr.aria-pressed]="currentType === t"
+          [attr.title]="t">
+          <span [ngSwitch]="t">
+            <span *ngSwitchCase="'bar'">📊</span>
+            <span *ngSwitchCase="'line'">📈</span>
+            <span *ngSwitchCase="'area'">🌄</span>
+            <span *ngSwitchCase="'donut'">🍩</span>
+            <span *ngSwitchCase="'pie'">🥧</span>
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="!series.length" class="flex-1 flex items-center justify-center text-slate-500 text-sm">
+    Sin datos para mostrar
+  </div>
+
+  <apx-chart
+    *ngIf="series.length"
+    [series]="chartSeries"
+    [chart]="chart"
+    [xaxis]="xaxis"
+    [labels]="pieLabels"
+    [plotOptions]="plotOptions"
+    [legend]="legend"
+    [theme]="theme"
+    [dataLabels]="dataLabels"
+    [stroke]="stroke"
+    [fill]="fill"
+    [tooltip]="tooltip"
+    [colors]="colors">
+  </apx-chart>
+
+</div>

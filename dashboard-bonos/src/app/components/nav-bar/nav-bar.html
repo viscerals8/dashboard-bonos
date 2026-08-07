@@ -1,0 +1,25 @@
+<nav *ngIf="visible" class="sticky top-0 z-50 bg-slate-900 border-b border-slate-700 shadow-lg">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
+
+    <a routerLink="/dashboards" class="flex items-center gap-2 text-cyan-400 font-extrabold text-lg">
+      💰 Sistema de Bonos
+    </a>
+
+    <div class="flex items-center gap-4">
+      <a
+        routerLink="/dashboards"
+        class="text-sm text-slate-300 hover:text-white transition-colors">
+        🏠 Mis Dashboards
+      </a>
+
+      <span class="text-sm text-slate-400 hidden sm:inline">{{ nombre }}</span>
+
+      <button
+        (click)="cerrarSesion()"
+        class="text-sm bg-slate-800 hover:bg-red-600 text-slate-200 px-3 py-1.5 rounded-xl border border-slate-700 transition-colors">
+        Cerrar sesión
+      </button>
+    </div>
+
+  </div>
+</nav>
