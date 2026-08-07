@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 interface LoginResponse {
   access_token: string;
@@ -16,7 +17,7 @@ const NOMBRE_KEY = 'dashboard_nombre';
 })
 export class AuthService {
 
-  private apiUrl = 'http://127.0.0.1:8001/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) {}
 

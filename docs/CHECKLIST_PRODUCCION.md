@@ -4,9 +4,10 @@ Evaluación honesta a fecha 2026-07-22. El MVP funciona y demuestra bien el conc
 
 ## 🔴 Bloqueante — sin esto no sirve con usuarios reales
 
-- [ ] **Arreglar el login real.** `app/security.py::verify_password()` compara la contraseña en texto plano contra `USUARIOS.password`, pero 258 de 273 cuentas reales tienen esa columna hasheada (parece SHA256, 64 caracteres hex — hay que confirmar el algoritmo exacto, probablemente esté documentado en el sistema que originalmente generó esos hashes). Hoy **ningún usuario real puede iniciar sesión**. El comentario en el código ya lo admite: *"todavia no esta hasheado (migracion pendiente, ver plan del MVP)"*.
-  - Una vez identificado el algoritmo, `verify_password` debe hashear el input y comparar, no comparar texto plano.
-  - Considerar migrar a bcrypt (ya está en `requirements.txt`) con una tabla de migración gradual si el hash actual es débil.
+- [ ] **Arreglar el login para las 258 cuentas reales.** `app/security.py::verify_password()` ahora usa `passlib` con soporte real de bcrypt (`schemes=["bcrypt", "plaintext"]`), en vez de comparar todo como texto plano. Esto ya cubre correctamente las cuentas demo (password en texto plano) y cualquier password futura migrada a bcrypt. Pero las 258 cuentas reales tienen `USUARIOS.password` con un hash tipo SHA256 (64 caracteres hex) cuyo algoritmo exacto no está confirmado — el código deja esas cuentas fallando el login a propósito en vez de adivinar el algoritmo. Falta:
+  - Confirmar el algoritmo exacto (probablemente esté documentado en el sistema que originalmente generó esos hashes).
+  - Agregar ese scheme a `pwd_context` en `security.py` una vez confirmado, o migrar esas 258 cuentas a bcrypt con un script one-off usando `hash_password()` (ya disponible en `security.py`).
+  - Nota técnica: `bcrypt` quedó fijado en `4.0.1` en `requirements.txt` porque `passlib==1.7.4` es incompatible con `bcrypt>=4.1` (bug conocido del ecosistema: passlib espera `bcrypt.__about__.__version__`, que se removió).
 
 ## 🟠 Importante — antes de tener tráfico real o crecer los datos
 
@@ -16,7 +17,7 @@ Evaluación honesta a fecha 2026-07-22. El MVP funciona y demuestra bien el conc
   - `USUARIOS`: índice único en `username` (es la clave de login); índice normal en `rut` (no puede ser único mientras haya duplicados reales)
 - [ ] **Resolver duplicados en `USUARIOS.rut`.** Ya lo comprobamos en vivo (dos cuentas distintas con el mismo rut generan filas duplicadas en cualquier JOIN por rut). El código ya deduplica con `ROW_NUMBER()` donde se detectó, pero es un parche — lo correcto es limpiar el dato o agregar un identificador propio.
 - [ ] **Restringir CORS** en `main.py` — hoy acepta cualquier puerto de `localhost`/`127.0.0.1`/`[::1]` (`allow_origin_regex`), perfecto para desarrollo, pero en producción debe ser una lista exacta del dominio real del frontend.
-- [ ] **Mover la URL del backend a `environment.ts`** — hoy está hardcodeada (`http://127.0.0.1:8001`) en `auth.service.ts` y `dashboard.service.ts`. Usar `environment.apiUrl` con `environment.prod.ts` para el build de producción.
+- [x] **Mover la URL del backend a `environment.ts`** — ya está: `environment.apiUrl` en `src/environments/environment.ts`, con `environment.prod.ts` + `fileReplacements` en `angular.json` para el build de producción. Falta solo completar la URL real en `environment.prod.ts` cuando exista un backend desplegado.
 - [ ] **HTTPS** — todo corre hoy en HTTP plano.
 - [ ] **`.env` de producción separado**, sin las 15 cuentas `@demo.cl` ni apuntando al servidor de pruebas `JUSTTIMEAPP\JUSTTIMEAPP`.
 

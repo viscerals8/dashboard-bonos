@@ -23,8 +23,8 @@ Evaluación honesta a la fecha. No es un producto terminado — es un MVP funcio
 | Panel General (11 paneles, scope empresa/zona) | ✅ Completo | Probado con 15 combinaciones distintas de scope |
 | Mi Info (7 paneles personales por RUT) | ✅ Completo | |
 | Gráficos interactivos reutilizables | ✅ Completo | Mutables en vivo, componente único (`kpi-card`) |
-| Autenticación (login + JWT) | 🟡 En progreso | Funciona de punta a punta, pero `verify_password` compara la contraseña en texto plano. Solo las cuentas demo pueden loguearse hoy; las cuentas reales tienen la contraseña hasheada y **no pueden iniciar sesión todavía** |
-| Config de entornos en el frontend | ⛔ Pendiente | La URL del backend está hardcodeada (`http://127.0.0.1:8001`) en lugar de usar `environment.ts` |
+| Autenticación (login + JWT) | 🟡 En progreso | `verify_password` ahora usa `passlib` (bcrypt real + fallback a texto plano para cuentas demo), en vez de comparar todo como texto plano. Las cuentas demo funcionan igual que antes. Las 258 cuentas reales con hash tipo SHA256 **siguen sin poder loguearse**: el algoritmo exacto no está confirmado, y el código deja eso documentado en vez de adivinarlo (ver `docs/CHECKLIST_PRODUCCION.md`) |
+| Config de entornos en el frontend | ✅ Completo | La URL del backend ahora vive en `src/environments/environment.ts` / `environment.prod.ts`, con `fileReplacements` configurado en `angular.json` para el build de producción |
 | Seguridad para producción (CORS restringido, HTTPS, `.env` separado) | ⛔ Pendiente | Hoy todo corre en HTTP plano, en modo desarrollo |
 | Índices en la base de datos | ⛔ Pendiente | La base restaurada no tiene ningún índice |
 | Tests automatizados | ⛔ Pendiente | No existen en backend ni frontend (salvo el boilerplate por defecto de Angular CLI) |
