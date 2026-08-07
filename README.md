@@ -25,10 +25,12 @@ Evaluación honesta a la fecha. No es un producto terminado — es un MVP funcio
 | Gráficos interactivos reutilizables | ✅ Completo | Mutables en vivo, componente único (`kpi-card`) |
 | Autenticación (login + JWT) | 🟡 En progreso | `verify_password` ahora usa `passlib` (bcrypt real + fallback a texto plano para cuentas demo), en vez de comparar todo como texto plano. Las cuentas demo funcionan igual que antes. Las 258 cuentas reales con hash tipo SHA256 **siguen sin poder loguearse**: el algoritmo exacto no está confirmado, y el código deja eso documentado en vez de adivinarlo (ver `docs/CHECKLIST_PRODUCCION.md`) |
 | Config de entornos en el frontend | ✅ Completo | La URL del backend ahora vive en `src/environments/environment.ts` / `environment.prod.ts`, con `fileReplacements` configurado en `angular.json` para el build de producción |
-| Seguridad para producción (CORS restringido, HTTPS, `.env` separado) | ⛔ Pendiente | Hoy todo corre en HTTP plano, en modo desarrollo |
-| Índices en la base de datos | ⛔ Pendiente | La base restaurada no tiene ningún índice |
-| Tests automatizados | ⛔ Pendiente | No existen en backend ni frontend (salvo el boilerplate por defecto de Angular CLI) |
-| CI/CD | ⛔ Pendiente | No configurado |
+| CORS | ✅ Completo | Restringible por `ALLOWED_ORIGINS` en `.env` (lista exacta de dominios). Sin esa variable, usa el regex permisivo de desarrollo |
+| Índices en la base de datos | 🟡 Script listo, falta ejecutar | `migrations/002_indices.sql` cubre los índices que faltaban (ver `CHECKLIST_PRODUCCION.md`), pero no se corrió contra ninguna base real todavía |
+| Tests automatizados (backend) | ✅ Completo | 19 tests con `pytest` cubren la lógica de scoping (`_run_scoped_query`, `_account_scope`), autenticación (JWT, `verify_password`) y parseo de claims |
+| Tests automatizados (frontend) | ⛔ Pendiente | No existen, salvo el boilerplate por defecto de Angular CLI |
+| CI/CD | ✅ Completo | GitHub Actions corre los tests del backend y el build de producción del frontend en cada push/PR a `main` (`.github/workflows/ci.yml`) |
+| HTTPS / `.env` separado para producción | ⛔ Pendiente | Son decisiones de despliegue, no de código — quedan documentadas en `docs/CHECKLIST_PRODUCCION.md` |
 
 ## Stack técnico
 
@@ -71,7 +73,15 @@ npm install
 npm start                      # ng serve, sirve en http://localhost:4200
 ```
 
-El frontend espera el backend en `http://127.0.0.1:8001` (hardcodeado hoy, ver tabla de estado).
+El frontend usa `http://127.0.0.1:8001` por defecto en desarrollo (`src/environments/environment.ts`).
+
+### Tests
+
+```bash
+cd dashboard-backend
+pip install -r requirements-dev.txt
+pytest
+```
 
 ## Documentación adicional
 

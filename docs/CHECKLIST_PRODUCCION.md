@@ -11,14 +11,14 @@ Evaluación honesta a fecha 2026-07-22. El MVP funciona y demuestra bien el conc
 
 ## 🟠 Importante — antes de tener tráfico real o crecer los datos
 
-- [ ] **Agregar índices** a la base restaurada (no tiene ninguno):
+- [x] **Agregar índices** a la base restaurada (no tenía ninguno) — script listo en `migrations/002_indices.sql` (idempotente, se puede correr más de una vez), pero **todavía no se ejecutó contra ninguna base real**:
   - `INGRESO_BONO`: índice en `SOLICITANTE`, `ID_EMPRESA`, `id_zona`, `ESTADO`, y compuesto `(ID_EMPRESA, id_zona)`
   - `VALIDACION_BONO`: índice en `ID_BONO`, `USER_VALIDADOR1`, `USER_VALIDADOR2`, `ESTADO`
   - `USUARIOS`: índice único en `username` (es la clave de login); índice normal en `rut` (no puede ser único mientras haya duplicados reales)
 - [ ] **Resolver duplicados en `USUARIOS.rut`.** Ya lo comprobamos en vivo (dos cuentas distintas con el mismo rut generan filas duplicadas en cualquier JOIN por rut). El código ya deduplica con `ROW_NUMBER()` donde se detectó, pero es un parche — lo correcto es limpiar el dato o agregar un identificador propio.
-- [ ] **Restringir CORS** en `main.py` — hoy acepta cualquier puerto de `localhost`/`127.0.0.1`/`[::1]` (`allow_origin_regex`), perfecto para desarrollo, pero en producción debe ser una lista exacta del dominio real del frontend.
+- [x] **Restringir CORS** en `main.py` — ahora es configurable vía `ALLOWED_ORIGINS` en `.env` (lista exacta de dominios, separados por coma). Sin esa variable, sigue usando el regex permisivo de desarrollo (cualquier puerto de `localhost`/`127.0.0.1`/`[::1]`). Falta solo definir `ALLOWED_ORIGINS` en el `.env` real de producción.
 - [x] **Mover la URL del backend a `environment.ts`** — ya está: `environment.apiUrl` en `src/environments/environment.ts`, con `environment.prod.ts` + `fileReplacements` en `angular.json` para el build de producción. Falta solo completar la URL real en `environment.prod.ts` cuando exista un backend desplegado.
-- [ ] **HTTPS** — todo corre hoy en HTTP plano.
+- [ ] **HTTPS** — todo corre hoy en HTTP plano. Es una decisión de despliegue (servidor/proxy), no de código.
 - [ ] **`.env` de producción separado**, sin las 15 cuentas `@demo.cl` ni apuntando al servidor de pruebas `JUSTTIMEAPP\JUSTTIMEAPP`.
 
 ## 🟡 Recomendado — mejora la robustez pero no bloquea un lanzamiento inicial
@@ -26,7 +26,8 @@ Evaluación honesta a fecha 2026-07-22. El MVP funciona y demuestra bien el conc
 - [ ] Rate limiting / bloqueo tras intentos fallidos en `/auth/login`
 - [ ] Refresh token (hoy el JWT expira a las 8h sin renovación, el usuario tiene que volver a loguearse)
 - [ ] Logging estructurado + monitoreo de errores (Sentry o similar)
-- [ ] Tests automatizados (no existen hoy ni en backend ni en frontend, salvo el `dashboard.spec.ts` default de Angular CLI)
+- [x] Tests automatizados en el backend — 19 tests con `pytest` (`dashboard-backend/tests/`) cubren `_run_scoped_query`, `_account_scope`, `verify_password`/`hash_password` y el ciclo de vida del JWT. **Sigue faltando** en el frontend (solo existe el `dashboard.spec.ts` default de Angular CLI, sin aserciones reales).
+- [x] CI — GitHub Actions (`.github/workflows/ci.yml`) corre los tests del backend y el build de producción del frontend en cada push/PR a `main`.
 - [ ] Paginación en cualquier endpoint futuro que devuelva listas no agregadas (los actuales agregan con `GROUP BY`, así que los payloads son chicos — esto es una guía a futuro, no una falla actual)
 - [ ] Confirmar por qué `ExcelBonos` existe en el backup nativo pero no en el export manual, y decidir si el backend debe usarla
 

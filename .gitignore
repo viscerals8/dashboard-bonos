@@ -9,6 +9,7 @@ __pycache__/
 venv/
 .venv/
 *.log
+.pytest_cache/
 
 # --- Node / Angular (dashboard-bonos) ---
 node_modules/
